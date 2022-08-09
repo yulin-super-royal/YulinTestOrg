@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using YulinTestOrg.Data;
+using YulinTestOrg.Interface;
 using YulinTestOrg.Models;
 
 namespace YulinTestOrg.Controllers
@@ -7,10 +10,14 @@ namespace YulinTestOrg.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRcgApiService rcgApiService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IRcgApiService rcgApiService, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
+            this.rcgApiService = rcgApiService;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -18,8 +25,25 @@ namespace YulinTestOrg.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> PrivacyAsync()
         {
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userName = HttpContext.User.Identity.Name;
+
+            //await rcgApiService.CreateOrSetUser(userName);
+            var result1 = await rcgApiService.Login(userName);
+            //await rcgApiService.KickOut(userName);
+            //await rcgApiService.KickOutByCompany();
+            //var result2 = await rcgApiService.GetBetLimit();
+            //var result3 = await rcgApiService.GetBalance(userName);
+            //var result4 = await rcgApiService.GetPlayerOnlineList();
+            //var result5 = await rcgApiService.Deposit(userName, 10000);
+            //var result6 = await rcgApiService.Withdraw(userName, 10000);
+            //var result7 = await rcgApiService.GetBetRecordList();
+            //var result8 = await rcgApiService.GetGameDeskList();
+            //var result9 = await rcgApiService.GetChangeRecordList();
+            //var result10 = await rcgApiService.GetTransactionLog(result5.TransactionId);
+            //var result11 = await rcgApiService.GetOpenList("SYBC20204101", new DateTime(2022, 8, 9), "620809004", "0302");
             return View();
         }
 

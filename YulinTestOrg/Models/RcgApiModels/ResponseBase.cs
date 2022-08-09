@@ -1,6 +1,6 @@
 ﻿namespace YulinTestOrg.Models.RcgApiModels
 {
-    public class ResponseBase<TModel> where TModel : class
+    public class ResponseBase<TModel>
     {
         public int MsgId { get; set; }
         public string Message { get; set; }

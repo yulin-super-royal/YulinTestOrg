@@ -21,12 +21,8 @@
         public string OpenGameList { get; set; }
     }
 
-    public class CreateOrSetUserResponse
+    public class CreateOrSetUserResponse : ResponseBase<CreateOrSetUserResponseData>
     {
-        public int MsgId { get; set; }
-        public string Message { get; set; }
-        public CreateOrSetUserResponseData Data { get; set; }
-        public int Timestamp { get; set; }
     }
 
     public class CreateOrSetUserResponseData

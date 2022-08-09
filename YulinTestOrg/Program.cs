@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using YulinTestOrg.Data;
-using YulinTestOrgService.Utility.Setting;
+using YulinTestOrg.Extensions;
+using YulinTestOrg.Middleware;
+using YulinTestOrg.Utility.Setting;
 
 namespace YulinTestOrg
 {
@@ -21,23 +23,17 @@ namespace YulinTestOrg
                 var builder = WebApplication.CreateBuilder(args);
 
                 builder.Configuration.AddJsonFile("appsettings.json", false)
-                   .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                   .AddEnvironmentVariables();
+                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables();
 
-                builder.Services.Configure<AppSetting>(builder.Configuration.GetSection("AppSetting"));
+                builder.Services.Configure<Appsetting>(builder.Configuration.GetSection("AppSetting"));
 
                 builder.Host.UseSerilog((ctx, lc) => lc
                     .ReadFrom.Configuration(ctx.Configuration));
 
                 // Add services to the container.
-                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-                builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite(connectionString));
-                builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-                builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
-                builder.Services.AddControllersWithViews();
+                builder.Services.AddServiceExtension(builder.Configuration);
+                builder.Services.AddRcgExtension();
 
                 var app = builder.Build();
 
@@ -53,6 +49,8 @@ namespace YulinTestOrg
                     app.UseHsts();
                 }
 
+                app.UseMiddleware<ExceptionHandleMiddleware>();
+
                 app.UseHttpsRedirection();
                 app.UseStaticFiles();
 
@@ -66,6 +64,8 @@ namespace YulinTestOrg
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 app.MapRazorPages();
 
+                app.UseServiceExtension();
+                app.UseRcgExtension();
                 app.Run();
             }
             catch (Exception ex)

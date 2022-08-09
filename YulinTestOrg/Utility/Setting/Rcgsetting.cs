@@ -1,5 +1,11 @@
-﻿namespace YulinTestOrgService.Utility.Setting
+﻿namespace YulinTestOrg.Utility.Setting
 {
+    public class Rcgsetting
+    {
+        public string ApiUrl { get; set; }
+        public Organizationinfo OrganizationInfo { get; set; }
+    }
+
     public class Organizationinfo
     {
         public Guid OrganizationId { get; set; }

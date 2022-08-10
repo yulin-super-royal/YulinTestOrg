@@ -6,3 +6,27 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div id="app" class="pt-2">
+    {{ isLoading }}
+</div>
+
+@section Scripts{
+    <script>
+        const app = {
+            data() {
+                return {
+                    isLoading: false,
+                    notfound: false
+                }
+            },
+            methods: {
+            },
+            mounted() {
+            }
+        };
+
+        const vm = Vue.createApp(app)
+            .mount('#app');
+    </script>
+}

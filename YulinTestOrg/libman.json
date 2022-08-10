@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "vue@3.2.37",
+      "destination": "wwwroot/lib/vue/",
+      "files": [
+        "dist/vue.global.js",
+        "dist/vue.global.prod.js"
+      ]
+    },
+    {
+      "library": "vue-i18n@9.2.2",
+      "destination": "wwwroot/lib/vue-i18n/",
+      "files": [
+        "dist/vue-i18n.global.js",
+        "dist/vue-i18n.global.prod.js"
+      ]
+    }
+  ]
+}

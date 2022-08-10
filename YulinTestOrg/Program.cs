@@ -34,6 +34,7 @@ namespace YulinTestOrg
                 // Add services to the container.
                 builder.Services.AddServiceExtension(builder.Configuration);
                 builder.Services.AddRcgExtension();
+                builder.Services.AddCoravelExtension();
 
                 var app = builder.Build();
 
@@ -66,6 +67,7 @@ namespace YulinTestOrg
 
                 app.UseServiceExtension();
                 app.UseRcgExtension();
+                app.UseCoravelSchedule();
                 app.Run();
             }
             catch (Exception ex)

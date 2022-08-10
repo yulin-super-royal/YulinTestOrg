@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using YulinTestOrg.Data;
@@ -25,13 +26,13 @@ namespace YulinTestOrg.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PrivacyAsync()
+        public IActionResult Privacy()
         {
             //var user = await _userManager.GetUserAsync(HttpContext.User);
             var userName = HttpContext.User.Identity.Name;
 
             //await rcgApiService.CreateOrSetUser(userName);
-            var result1 = await rcgApiService.Login(userName);
+            //var result1 = await rcgApiService.Login(userName);
             //await rcgApiService.KickOut(userName);
             //await rcgApiService.KickOutByCompany();
             //var result2 = await rcgApiService.GetBetLimit();
@@ -39,11 +40,23 @@ namespace YulinTestOrg.Controllers
             //var result4 = await rcgApiService.GetPlayerOnlineList();
             //var result5 = await rcgApiService.Deposit(userName, 10000);
             //var result6 = await rcgApiService.Withdraw(userName, 10000);
-            //var result7 = await rcgApiService.GetBetRecordList();
+            //var result7 = await rcgApiService.GetBetRecordList(1);
             //var result8 = await rcgApiService.GetGameDeskList();
             //var result9 = await rcgApiService.GetChangeRecordList();
             //var result10 = await rcgApiService.GetTransactionLog(result5.TransactionId);
             //var result11 = await rcgApiService.GetOpenList("SYBC20204101", new DateTime(2022, 8, 9), "620809004", "0302");
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult BetRecord()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult PointManage()
+        {
             return View();
         }
 

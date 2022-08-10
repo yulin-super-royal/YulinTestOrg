@@ -9,5 +9,8 @@ namespace YulinTestOrg.Data
             : base(options)
         {
         }
+
+        public DbSet<RcgBetRecord> RcgBetRecords { get; set; }
+        public DbSet<RcgTransactionRecord> RcgTransactionRecords { get; set; }
     }
 }

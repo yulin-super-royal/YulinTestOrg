@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YulinTestOrg.Data;
 
@@ -10,9 +11,10 @@ using YulinTestOrg.Data;
 namespace YulinTestOrg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220810052834_RcgBetRecord2")]
+    partial class RcgBetRecord2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -278,42 +280,6 @@ namespace YulinTestOrg.Migrations
                     b.HasIndex("MemberAccount");
 
                     b.ToTable("RcgBetRecords");
-                });
-
-            modelBuilder.Entity("YulinTestOrg.Data.RcgTransactionRecord", b =>
-                {
-                    b.Property<string>("TransactionId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MemberAcount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SystemCode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("TransactionTime")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("TransactionType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("WebId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("MemberAcount");
-
-                    b.ToTable("RcgTransactionRecords");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

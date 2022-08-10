@@ -2,13 +2,26 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<div class="container">
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+    </div>
 
-<div id="app" class="pt-2">
-    {{ isLoading }}
+    <div id="app">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">RCG Royal Casino Game</h5>
+                            <button v-on:click="loginRcg" class="btn btn-primary">Go RCG</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts{
@@ -21,6 +34,25 @@
                 }
             },
             methods: {
+                loginRcg() {
+
+                    let data = {
+                    };
+
+                    let settings = {
+                        'url': '@Url.Content("~/api/RcgService/LoginToRcg")',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            "Content-Type": 'application/json'
+                        },
+                        'data': JSON.stringify(data),
+                    };
+
+                    $.ajax(settings).done(function(response) {
+                        window.open(response.url);
+                    });
+                }
             },
             mounted() {
             }

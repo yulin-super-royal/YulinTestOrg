@@ -1,26 +1,13 @@
-﻿namespace YulinTestOrg.Models.RcgApiModels
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace YulinTestOrg.Data
 {
-    public class GetBetRecordListRequest
+    [Index(nameof(MemberAccount))]
+    public class RcgBetRecord
     {
-        public string SystemCode { get; set; }
-        public string WebId { get; set; }
-        public long MaxId { get; set; }
-        public int Rows { get; set; }
-    }
-
-    public class GetBetRecordListResponse : ResponseBase<GetBetRecordListResponseData>
-    {
-    }
-
-    public class GetBetRecordListResponseData
-    {
-        public string SystemCode { get; set; }
-        public string WebId { get; set; }
-        public List<GetBetRecordListResponseDatalist> DataList { get; set; }
-    }
-
-    public class GetBetRecordListResponseDatalist
-    {
+        [Key]
+        public Guid RecordId { get; set; }
         public string MemberAccount { get; set; }
         public long Id { get; set; }
         public int GameId { get; set; }
@@ -39,5 +26,4 @@
         public decimal Odds { get; set; }
         public long OriginRecordId { get; set; }
     }
-
 }

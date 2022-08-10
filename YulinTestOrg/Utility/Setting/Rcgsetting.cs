@@ -3,6 +3,8 @@
     public class Rcgsetting
     {
         public string ApiUrl { get; set; }
+        public int RcgGetBetRecordListCron { get; set; }
+        public int RcgGetBetRecordListBatchSize { get; set; }
         public Organizationinfo OrganizationInfo { get; set; }
     }
 

@@ -8,6 +8,7 @@ namespace YulinTestOrg.Extensions
         public static IServiceCollection AddRcgExtension(this IServiceCollection services)
         {
             services.AddScoped<IRcgApiService, RcgApiService>();
+            services.AddScoped<IRcgBetRecordService, RcgBetRecordService>();
             return services;
         }
 

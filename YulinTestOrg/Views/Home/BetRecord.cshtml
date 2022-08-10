@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "BetRecord";
+}
+
+<div class="container-fluid">
+    <h1>注單紀錄</h1>
+    <table id="oTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th>注單號</th>
+                <th>桌別</th>
+                <th>輪號</th>
+                <th>局號</th>
+                <th>注區</th>
+                <th>下注</th>
+                <th>有效下注</th>
+                <th>輸贏</th>
+                <th>賠率</th>
+                <th>下注時間</th>
+                <th>結算時間</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts{
+    <link rel="stylesheet" type="text/css" href="~/lib/datatables.net-bs5/datatables.min.css" />
+    <script type="text/javascript" src="~/lib/datatables.net-bs5/datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#oTable').DataTable({
+                searching: false,
+                processing: true,
+                serverSide: true,
+                order: [[0, "desc"]],
+                language: {
+                    processing: "處理中...",
+                    loadingRecords: "載入中...",
+                    lengthMenu: "顯示 _MENU_ 項結果",
+                    zeroRecords: "沒有符合的結果",
+                    info: "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                    infoEmpty: "顯示第 0 至 0 項結果，共 0 項",
+                    infoFiltered: "(從 _MAX_ 項結果中過濾)",
+                    infoPostFix: "",
+                    search: "搜尋:",
+                    paginate: {
+                        first: "第一頁",
+                        previous: "上一頁",
+                        next: "下一頁",
+                        last: "最後一頁"
+                    },
+                    aria: {
+                        sortAscending: ": 升冪排列",
+                        sortDescending: ": 降冪排列"
+                    }
+                },
+                ajax: {
+                    url: '@Url.Content("~/api/RcgService/SearchBetRecord")',
+                    type: 'POST',
+                    dataType: "JSON",
+                },
+                columns: [
+                    {
+                        data: 'id'
+                    },
+                    {
+                        data: 'desk'
+                    },
+                    {
+                        data: 'runNo'
+                    },
+                    {
+                        data: 'activeNo'
+                    },
+                    {
+                        data: 'betArea'
+                    },
+                    {
+                        data: 'bet',
+                        orderable: false
+                    },
+                    {
+                        data: 'available',
+                        orderable: false
+                    },
+                    {
+                        data: 'winLose',
+                        orderable: false
+                    },
+                    {
+                        data: 'odds',
+                        orderable: false
+                    },
+                    {
+                        data: 'dateTime'
+                    },
+                    {
+                        data: 'reportDT'
+                    },
+                ],
+            });
+        });
+    </script>
+}

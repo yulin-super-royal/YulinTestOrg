@@ -123,14 +123,14 @@ namespace YulinTestOrg.Service.RcgService
             return response.Data;
         }
 
-        public async Task<DepositResponseData> Deposit(string userName, decimal transctionAmount)
+        public async Task<DepositResponseData> Deposit(string userName, string transactionId, decimal transctionAmount)
         {
             var request = new DepositRequest
             {
                 SystemCode = this.appsetting.RCGSetting.OrganizationInfo.SystemCode,
                 WebId = this.appsetting.RCGSetting.OrganizationInfo.WebId,
                 MemberAccount = userName,
-                TransactionId = Guid.NewGuid().ToString(),
+                TransactionId = transactionId,
                 TransctionAmount = transctionAmount
             };
             var response = await PostData<DepositRequest,
@@ -139,14 +139,14 @@ namespace YulinTestOrg.Service.RcgService
             return response.Data;
         }
 
-        public async Task<WithdrawResponseData> Withdraw(string userName, decimal transctionAmount)
+        public async Task<WithdrawResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount)
         {
             var request = new WithdrawRequest
             {
                 SystemCode = this.appsetting.RCGSetting.OrganizationInfo.SystemCode,
                 WebId = this.appsetting.RCGSetting.OrganizationInfo.WebId,
                 MemberAccount = userName,
-                TransactionId = Guid.NewGuid().ToString(),
+                TransactionId = transactionId,
                 TransctionAmount = transctionAmount
             };
             var response = await PostData<WithdrawRequest,
@@ -155,14 +155,14 @@ namespace YulinTestOrg.Service.RcgService
             return response.Data;
         }
 
-        public async Task<GetBetRecordListResponseData> GetBetRecordList()
+        public async Task<GetBetRecordListResponseData> GetBetRecordList(long maxId)
         {
             var request = new GetBetRecordListRequest
             {
                 SystemCode = this.appsetting.RCGSetting.OrganizationInfo.SystemCode,
                 WebId = this.appsetting.RCGSetting.OrganizationInfo.WebId,
-                MaxId = 1,
-                Rows = 100
+                MaxId = maxId,
+                Rows = this.appsetting.RCGSetting.RcgGetBetRecordListBatchSize
             };
             var response = await PostData<GetBetRecordListRequest,
                                           GetBetRecordListResponse>("/api/Record/GetBetRecordList", request);

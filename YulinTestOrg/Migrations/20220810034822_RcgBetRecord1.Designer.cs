@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YulinTestOrg.Data;
 
@@ -10,9 +11,10 @@ using YulinTestOrg.Data;
 namespace YulinTestOrg.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220810034822_RcgBetRecord1")]
+    partial class RcgBetRecord1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -225,6 +227,9 @@ namespace YulinTestOrg.Migrations
                     b.Property<string>("ActiveNo")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Available")
                         .HasColumnType("TEXT");
 
@@ -275,45 +280,11 @@ namespace YulinTestOrg.Migrations
 
                     b.HasKey("RecordId");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("MemberAccount");
 
                     b.ToTable("RcgBetRecords");
-                });
-
-            modelBuilder.Entity("YulinTestOrg.Data.RcgTransactionRecord", b =>
-                {
-                    b.Property<string>("TransactionId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MemberAcount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SystemCode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("TransactionTime")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("TransactionType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("WebId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("MemberAcount");
-
-                    b.ToTable("RcgTransactionRecords");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -365,6 +336,20 @@ namespace YulinTestOrg.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YulinTestOrg.Data.RcgBetRecord", b =>
+                {
+                    b.HasOne("YulinTestOrg.Data.ApplicationUser", "ApplicationUser")
+                        .WithMany("RcgBetRecords")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("YulinTestOrg.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("RcgBetRecords");
                 });
 #pragma warning restore 612, 618
         }

@@ -56,7 +56,7 @@ namespace YulinTestOrg.Interface
         /// <param name="userName"></param>
         /// <param name="transctionAmount"></param>
         /// <returns></returns>
-        Task<DepositResponseData> Deposit(string userName, decimal transctionAmount);
+        Task<DepositResponseData> Deposit(string userName, string transactionId, decimal transctionAmount);
 
         /// <summary>
         /// 取款
@@ -64,13 +64,13 @@ namespace YulinTestOrg.Interface
         /// <param name="userName"></param>
         /// <param name="transctionAmount"></param>
         /// <returns></returns>
-        Task<WithdrawResponseData> Withdraw(string userName, decimal transctionAmount);
+        Task<WithdrawResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount);
 
         /// <summary>
         /// 取得下注紀錄
         /// </summary>
         /// <returns></returns>
-        Task<GetBetRecordListResponseData> GetBetRecordList();
+        Task<GetBetRecordListResponseData> GetBetRecordList(long maxId);
 
         /// <summary>
         /// 取得開放桌別清單

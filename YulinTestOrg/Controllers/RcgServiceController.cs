@@ -17,14 +17,17 @@ namespace YulinTestOrg.Controllers
         private readonly IRcgApiService rcgApiService;
         private readonly IRcgBetRecordService rcgBetRecordService;
         private readonly IRcgTransactionRecordService rcgTransactionRecordService;
+        private readonly IRcgGameDeskService rcgGameDeskService;
 
         public RcgServiceController(IRcgApiService rcgApiService,
                                     IRcgBetRecordService rcgBetRecordService,
-                                    IRcgTransactionRecordService rcgTransactionRecordService)
+                                    IRcgTransactionRecordService rcgTransactionRecordService,
+                                    IRcgGameDeskService rcgGameDeskService)
         {
             this.rcgApiService = rcgApiService;
             this.rcgBetRecordService = rcgBetRecordService;
             this.rcgTransactionRecordService = rcgTransactionRecordService;
+            this.rcgGameDeskService = rcgGameDeskService;
         }
 
         [HttpPost]
@@ -167,6 +170,15 @@ namespace YulinTestOrg.Controllers
 
         public class SearchRcgTransactionRecordRequest : JDataTableRequest
         {
+        }
+
+        [HttpPost]
+        [Route("GetGameDesk")]
+        public async Task<IActionResult> GetGameDesk()
+        {
+            var result = await this.rcgGameDeskService.Get();
+
+            return Ok(result);
         }
     }
 }

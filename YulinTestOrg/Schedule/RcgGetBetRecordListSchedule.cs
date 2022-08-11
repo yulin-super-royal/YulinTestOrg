@@ -41,7 +41,7 @@ namespace YulinTestOrg.Schedule
                 var betRecordList = await this.rcgApiService.GetBetRecordList(maxId);
                 if (betRecordList.DataList.Count == 0)
                 {
-                    logger.LogInformation("RcgGetBetRecordList Finish");
+                    logger.LogDebug("RcgGetBetRecordList Finish");
                     break;
                 }
                 else

@@ -2,7 +2,7 @@
 
 namespace YulinTestOrg.Data
 {
-    public class GameDesk
+    public class RcgGameDesk
     {
         [Key]
         public string Id { get; set; }

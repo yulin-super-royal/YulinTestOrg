@@ -13,6 +13,7 @@ namespace YulinTestOrg.Extensions
             services.AddScheduler();
 
             services.AddTransient<RcgGetBetRecordListSchedule>();
+            services.AddTransient<RcgGetGameDeskListSchedule>();
 
             return services;
         }
@@ -27,6 +28,13 @@ namespace YulinTestOrg.Extensions
                 scheduler.Schedule<RcgGetBetRecordListSchedule>()
                     .EverySeconds(appSetting.RCGSetting.RcgGetBetRecordListCron)
                     .PreventOverlapping("RcgGetBetRecordListSchedule");
+            });
+
+            provider.UseScheduler(scheduler =>
+            {
+                scheduler.Schedule<RcgGetGameDeskListSchedule>()
+                    .Daily()
+                    .PreventOverlapping("RcgGetGameDeskListSchedule");
             });
         }
     }

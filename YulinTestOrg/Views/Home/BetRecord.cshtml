@@ -36,6 +36,7 @@
     <script>
         var app = function() {
             var ot = new SDTableObj();
+            var gameDeskList = [];
 
             function search() {
                 var oTable = $('#oTable');
@@ -51,7 +52,10 @@
                             data: 'id'
                         },
                         {
-                            data: 'desk'
+                            data: 'desk',
+                            render: function(data, type, row, meta) {
+                                return gameDeskMap(data);
+                            }
                         },
                         {
                             data: 'runNo'
@@ -120,9 +124,35 @@
                 return dformat;
             }
 
+            function searchGameDesk() {
+                let settings = {
+                    'url': '@Url.Content("~/api/RcgService/GetGameDesk")',
+                    'method': 'POST',
+                    'timeout': 0,
+                    'headers': {
+                        "Content-Type": 'application/json'
+                    }
+                };
+
+                $.ajax(settings).done(function(response) {
+                    gameDeskList = response;
+                    search();
+                });
+            }
+
+            function gameDeskMap(id) {
+                const result = gameDeskList.find(x => x.id == id);
+
+                if (result) {
+                    return result.name;
+                }
+
+                return id;
+            }
+
             return {
                 init: function() {
-                    search();
+                    searchGameDesk();
                 },
                 search: function() {
                     search();

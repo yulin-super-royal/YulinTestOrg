@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Coravel.Queuing.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -13,12 +14,14 @@ namespace YulinTestOrg.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IRcgApiService rcgApiService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IQueue _queue;
 
-        public HomeController(ILogger<HomeController> logger, IRcgApiService rcgApiService, UserManager<ApplicationUser> userManager)
+        public HomeController(ILogger<HomeController> logger, IRcgApiService rcgApiService, UserManager<ApplicationUser> userManager, IQueue queue)
         {
             _logger = logger;
             this.rcgApiService = rcgApiService;
             _userManager = userManager;
+            _queue = queue;
         }
 
         public IActionResult Index()

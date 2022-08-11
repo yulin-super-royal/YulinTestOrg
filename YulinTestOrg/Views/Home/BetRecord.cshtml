@@ -3,7 +3,12 @@
 }
 
 <div class="container-fluid">
-    <h1>注單紀錄</h1>
+    <h1>
+        注單紀錄
+        <button class="col-sm-auto btn btn-primary mb-1" onclick="app.search()">
+            <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+    </h1>
     <table id="oTable" class="table table-hover">
         <thead>
             <tr>
@@ -26,80 +31,105 @@
 @section Scripts{
     <link rel="stylesheet" type="text/css" href="~/lib/datatables.net-bs5/datatables.min.css" />
     <script type="text/javascript" src="~/lib/datatables.net-bs5/datatables.min.js"></script>
+    <script type="text/javascript" src="~/js/tableDefine.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#oTable').DataTable({
-                searching: false,
-                processing: true,
-                serverSide: true,
-                order: [[0, "desc"]],
-                language: {
-                    processing: "處理中...",
-                    loadingRecords: "載入中...",
-                    lengthMenu: "顯示 _MENU_ 項結果",
-                    zeroRecords: "沒有符合的結果",
-                    info: "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                    infoEmpty: "顯示第 0 至 0 項結果，共 0 項",
-                    infoFiltered: "(從 _MAX_ 項結果中過濾)",
-                    infoPostFix: "",
-                    search: "搜尋:",
-                    paginate: {
-                        first: "第一頁",
-                        previous: "上一頁",
-                        next: "下一頁",
-                        last: "最後一頁"
+        var app = function() {
+            var ot = new SDTableObj();
+
+            function search() {
+                var oTable = $('#oTable');
+                var oTableOption = {
+                    order: [[0, "desc"]],
+                    ajax: {
+                        url: '@Url.Content("~/api/RcgService/SearchBetRecord")',
+                        type: 'POST',
+                        dataType: "JSON",
                     },
-                    aria: {
-                        sortAscending: ": 升冪排列",
-                        sortDescending: ": 降冪排列"
-                    }
+                    columns: [
+                        {
+                            data: 'id'
+                        },
+                        {
+                            data: 'desk'
+                        },
+                        {
+                            data: 'runNo'
+                        },
+                        {
+                            data: 'activeNo'
+                        },
+                        {
+                            data: 'betArea'
+                        },
+                        {
+                            data: 'bet',
+                            orderable: false
+                        },
+                        {
+                            data: 'available',
+                            orderable: false
+                        },
+                        {
+                            data: 'winLose',
+                            orderable: false,
+                            render: function(data, type, row, meta) {
+                                if (data >= 0) {
+                                    return `<span class="text-success">${data}</span>`;
+                                } else {
+                                    return `<span class="text-danger">${data}</span>`;
+                                }
+                            }
+                        },
+                        {
+                            data: 'odds',
+                            orderable: false
+                        },
+                        {
+                            data: 'dateTime',
+                            render: function(data, type, row, meta) {
+                                return datetimeFormat(data);
+                            }
+                        },
+                        {
+                            data: 'reportDT',
+                            render: function(data, type, row, meta) {
+                                return datetimeFormat(data);
+                            }
+                        },
+                    ],
+                };
+
+                ot.search(oTable, oTableOption);
+            }
+
+            function datetimeFormat(datetimeString) {
+                if (datetimeString == null) {
+                    return '';
+                }
+                var d = new Date(datetimeString);
+                var dformat =
+                    [d.getFullYear(),
+                    (d.getMonth() + 1).toString().padStart(2, '0'),
+                    d.getDate().toString().padStart(2, '0')].join('-') +
+                    ' ' +
+                    [d.getHours().toString().padStart(2, '0'),
+                    d.getMinutes().toString().padStart(2, '0'),
+                    d.getSeconds().toString().padStart(2, '0')].join(':');
+
+                return dformat;
+            }
+
+            return {
+                init: function() {
+                    search();
                 },
-                ajax: {
-                    url: '@Url.Content("~/api/RcgService/SearchBetRecord")',
-                    type: 'POST',
-                    dataType: "JSON",
-                },
-                columns: [
-                    {
-                        data: 'id'
-                    },
-                    {
-                        data: 'desk'
-                    },
-                    {
-                        data: 'runNo'
-                    },
-                    {
-                        data: 'activeNo'
-                    },
-                    {
-                        data: 'betArea'
-                    },
-                    {
-                        data: 'bet',
-                        orderable: false
-                    },
-                    {
-                        data: 'available',
-                        orderable: false
-                    },
-                    {
-                        data: 'winLose',
-                        orderable: false
-                    },
-                    {
-                        data: 'odds',
-                        orderable: false
-                    },
-                    {
-                        data: 'dateTime'
-                    },
-                    {
-                        data: 'reportDT'
-                    },
-                ],
-            });
-        });
+                search: function() {
+                    search();
+                }
+            }
+        }();
+
+        $(document).ready(app.init);
     </script>
 }

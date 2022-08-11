@@ -4,24 +4,215 @@
 
 <div class="container-fluid">
     <h1>點數管理</h1>
-    <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-auto col-form-label">存入點數至RCG</label>
-        <div class="col-sm-auto">
-            <input type="password" class="form-control" id="inputPassword">
+    <div id="app">
+        <h5>RCG點數：{{ balance }}</h5>
+        <div class="mb-3 row">
+            <label for="inputDeposit" class="col-sm-auto col-form-label">存入點數至RCG</label>
+            <div class="col-sm-auto">
+                <input type="text" class="form-control" id="inputDeposit" v-model="model.depositAmount">
+            </div>
+            <button class="col-sm-auto btn btn-success" v-on:click="pointManage(true)">存錢</button>
         </div>
-        <button class="col-sm-auto btn btn-success">存錢</button>
-    </div>
-    <div class="mb-3 row">
-        <label for="inputPassword" class="col-auto col-form-label">從RCG取回點數</label>
-        <div class="col-sm-auto">
-            <input type="password" class="form-control" id="inputPassword">
+        <div class="mb-3 row">
+            <label for="inputWithdraw" class="col-auto col-form-label">從RCG取回點數</label>
+            <div class="col-sm-auto">
+                <input type="text" class="form-control" id="inputWithdraw" v-model="model.withdrawAmount">
+            </div>
+            <button class="col-sm-auto btn btn-danger" v-on:click="pointManage(false)">取款</button>
         </div>
-        <button class="col-sm-auto btn btn-danger">取款</button>
     </div>
+</div>
+<div class="container-fluid">
+    <h1>
+        紀錄<button class="col-sm-auto btn btn-primary mb-1" onclick="app2.search()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+    </h1>
+    <table id="oTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th>交易Id</th>
+                <th>交易種類</th>
+                <th>金額</th>
+                <th>剩餘金額</th>
+                <th>交易時間</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 
 @section Scripts{
-    <script>
+    <link rel="stylesheet" type="text/css" href="~/lib/datatables.net-bs5/datatables.css" />
+    <script type="text/javascript" src="~/lib/datatables.net-bs5/datatables.js"></script>
+    <script type="text/javascript" src="~/js/tableDefine.js"></script>
 
+    <script>
+        const app = {
+            data() {
+                return {
+                    balance: 0,
+                    model: {
+                        depositAmount: 0,
+                        withdrawAmount: 0
+                    }
+                }
+            },
+            methods: {
+                getBalance() {
+
+                    let mainInstance = this;
+
+                    let data = {
+                    };
+
+                    let settings = {
+                        'url': '@Url.Content("~/api/RcgService/GetBalance")',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            "Content-Type": 'application/json'
+                        },
+                        'data': JSON.stringify(data),
+                    };
+
+                    $.ajax(settings).done(function(response) {
+                        mainInstance.balance = response.balance;
+                    });
+                },
+                pointManage(transactionType) {
+
+                    let mainInstance = this;
+
+                    let data = {
+                        transactionType: transactionType,
+                        amount: transactionType ? mainInstance.model.depositAmount : mainInstance.model.withdrawAmount
+                    };
+
+                    let settings = {
+                        url: '@Url.Content("~/api/RcgService/PointManage")',
+                        method: 'POST',
+                        timeout: 0,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify(data),
+                        success: function() {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '完成',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: '失敗',
+                                title: msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    };
+
+                    $.ajax(settings).done(function(response) {
+                        mainInstance.getBalance();
+                        app2.search();
+                        if (transactionType) {
+                            mainInstance.model.depositAmount = 0;
+                        } else {
+                            mainInstance.model.withdrawAmount = 0;
+                        }
+                    });
+                }
+            },
+            mounted() {
+                this.getBalance();
+            }
+        };
+
+        const vm = Vue.createApp(app)
+            .mount('#app');
+
+        var app2 = function() {
+            var ot = new SDTableObj();
+
+            function search() {
+                var oTable = $('#oTable');
+                var oTableOption = {
+                    order: [[4, "desc"]],
+                    ajax: {
+                        url: '@Url.Content("~/api/RcgService/SearchRcgTransactionRecord")',
+                        type: 'POST',
+                        dataType: "JSON",
+                    },
+                    columns: [
+                        {
+                            data: 'transactionId'
+                        },
+                        {
+                            data: 'transactionType',
+                            render: function(data, type, row, meta) {
+                                if (data) {
+                                    return `<span class="text-success">存錢</span>`;
+                                } else {
+                                    return `<span class="text-danger">取款</span>`;
+                                }
+                            }
+                        },
+                        {
+                            data: 'transactionAmount',
+                            orderable: false,
+                            render: function(data, type, row, meta) {
+                                if (row['transactionType']) {
+                                    return `<span class="text-success">${data}</span>`;
+                                } else {
+                                    return `<span class="text-danger">${data}</span>`;
+                                }
+                            }
+                        },
+                        {
+                            data: 'balance',
+                            orderable: false
+                        },
+                        {
+                            data: 'createDateTime',
+                            render: function(data, type, row, meta) {
+                                return datetimeFormat(data);
+                            }
+                        },
+                    ],
+                };
+
+                ot.search(oTable, oTableOption);
+            }
+
+            function datetimeFormat(datetimeString) {
+                if (datetimeString == null) {
+                    return '';
+                }
+                var d = new Date(datetimeString);
+                var dformat =
+                    [d.getFullYear(),
+                    (d.getMonth() + 1).toString().padStart(2, '0'),
+                    d.getDate().toString().padStart(2, '0')].join('-') +
+                    ' ' +
+                    [d.getHours().toString().padStart(2, '0'),
+                    d.getMinutes().toString().padStart(2, '0'),
+                    d.getSeconds().toString().padStart(2, '0')].join(':');
+
+                return dformat;
+            }
+
+            return {
+                init: function() {
+                    search();
+                },
+                search: function() {
+                    search();
+                },
+            }
+        }();
+
+        $(document).ready(app2.init);
     </script>
 }

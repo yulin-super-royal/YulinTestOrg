@@ -139,7 +139,7 @@ namespace YulinTestOrg.Service.RcgService
             return response.Data;
         }
 
-        public async Task<WithdrawResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount)
+        public async Task<DepositResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount)
         {
             var request = new WithdrawRequest
             {

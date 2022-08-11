@@ -9,6 +9,7 @@ namespace YulinTestOrg.Extensions
         {
             services.AddScoped<IRcgApiService, RcgApiService>();
             services.AddScoped<IRcgBetRecordService, RcgBetRecordService>();
+            services.AddScoped<IRcgTransactionRecordService, RcgTransactionRecordService>();
             return services;
         }
 

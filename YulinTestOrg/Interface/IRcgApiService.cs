@@ -64,7 +64,7 @@ namespace YulinTestOrg.Interface
         /// <param name="userName"></param>
         /// <param name="transctionAmount"></param>
         /// <returns></returns>
-        Task<WithdrawResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount);
+        Task<DepositResponseData> Withdraw(string userName, string transactionId, decimal transctionAmount);
 
         /// <summary>
         /// 取得下注紀錄

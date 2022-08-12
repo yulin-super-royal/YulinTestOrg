@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using YulinTestOrg.Data;
+using YulinTestOrg.Interface;
 
 namespace YulinTestOrg.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,15 @@ namespace YulinTestOrg.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IRcgApiService rcgApiService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IRcgApiService rcgApiService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace YulinTestOrg.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this.rcgApiService = rcgApiService;
         }
 
         /// <summary>
@@ -123,7 +127,7 @@ namespace YulinTestOrg.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.UserName, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                await this.rcgApiService.CreateOrSetUser(Input.UserName);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

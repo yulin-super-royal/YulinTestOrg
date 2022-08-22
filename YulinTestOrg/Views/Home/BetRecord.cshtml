@@ -34,9 +34,10 @@
     <script type="text/javascript" src="~/js/tableDefine.js"></script>
 
     <script>
-        var app = function() {
+        var app = function () {
             var ot = new SDTableObj();
             var gameDeskList = [];
+            var betAreaList = [];
 
             function search() {
                 var oTable = $('#oTable');
@@ -53,7 +54,7 @@
                         },
                         {
                             data: 'desk',
-                            render: function(data, type, row, meta) {
+                            render: function (data, type, row, meta) {
                                 return gameDeskMap(data);
                             }
                         },
@@ -64,7 +65,21 @@
                             data: 'activeNo'
                         },
                         {
-                            data: 'betArea'
+                            data: 'betArea',
+                            render: function (data, type, row, meta) {
+                                var filters = {
+                                    gameId: [row['gameId']],
+                                    betArea: [data],
+                                    lang: ['zh-TW']
+                                }
+                                var result = multiFilter(betAreaList, filters);
+
+                                if (result.lenght == 0) {
+                                    return data;
+                                }
+
+                                return result[0].context;
+                            }
                         },
                         {
                             data: 'bet',
@@ -77,7 +92,7 @@
                         {
                             data: 'winLose',
                             orderable: false,
-                            render: function(data, type, row, meta) {
+                            render: function (data, type, row, meta) {
                                 if (data >= 0) {
                                     return `<span class="text-success">${data}</span>`;
                                 } else {
@@ -91,13 +106,13 @@
                         },
                         {
                             data: 'dateTime',
-                            render: function(data, type, row, meta) {
+                            render: function (data, type, row, meta) {
                                 return datetimeFormat(data);
                             }
                         },
                         {
                             data: 'reportDT',
-                            render: function(data, type, row, meta) {
+                            render: function (data, type, row, meta) {
                                 return datetimeFormat(data);
                             }
                         },
@@ -134,10 +149,58 @@
                     }
                 };
 
-                $.ajax(settings).done(function(response) {
+                $.ajax(settings).done(function (response) {
                     gameDeskList = response;
-                    search();
                 });
+            }
+
+            function searchGameDeskAsync() {
+                return new Promise((resolve, reject) => {
+                    let settings = {
+                        'url': '@Url.Content("~/api/RcgService/GetGameDesk")',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            "Content-Type": 'application/json'
+                        }
+                    };
+
+                    $.ajax(settings).done(function (response) {
+                        resolve(response);
+                    });
+                })
+            }
+
+            function searchBetArea() {
+                let settings = {
+                    'url': '@Url.Content("~/api/RcgService/GetBetArea")',
+                    'method': 'POST',
+                    'timeout': 0,
+                    'headers': {
+                        "Content-Type": 'application/json'
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    betAreaList = response;
+                });
+            }
+
+            function searchBetAreaAsync() {
+                return new Promise((resolve, reject) => {
+                    let settings = {
+                        'url': '@Url.Content("~/api/RcgService/GetBetArea")',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            "Content-Type": 'application/json'
+                        }
+                    };
+
+                    $.ajax(settings).done(function (response) {
+                        resolve(response);
+                    });
+                })
             }
 
             function gameDeskMap(id) {
@@ -150,11 +213,31 @@
                 return id;
             }
 
+            function multiFilter(array, filters) {
+                const filterKeys = Object.keys(filters)
+                // filters all elements passing the criteria
+                return array.filter((item) => {
+                    // dynamically validate all filter criteria
+                    return filterKeys.every(key => {
+                        //ignore when the filter is empty Anne
+                        if (!filters[key].length) return true
+                        return !!~filters[key].indexOf(item[key])
+                    })
+                })
+            }
+
+            async function initData() {
+                const data = await Promise.all([searchGameDeskAsync(), searchBetAreaAsync()]);
+                gameDeskList = data[0];
+                betAreaList = data[1];
+                search();
+            }
+
             return {
-                init: function() {
-                    searchGameDesk();
+                init: function () {
+                    initData();
                 },
-                search: function() {
+                search: function () {
                     search();
                 }
             }

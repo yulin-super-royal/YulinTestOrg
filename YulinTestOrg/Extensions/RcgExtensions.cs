@@ -11,6 +11,7 @@ namespace YulinTestOrg.Extensions
             services.AddScoped<IRcgBetRecordService, RcgBetRecordService>();
             services.AddScoped<IRcgTransactionRecordService, RcgTransactionRecordService>();
             services.AddScoped<IRcgGameDeskService, RcgGameDeskService>();
+            services.AddScoped<IRcgBetAreaService, RcgBetAreaService>();
             return services;
         }
 

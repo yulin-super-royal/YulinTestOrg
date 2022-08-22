@@ -103,5 +103,11 @@ namespace YulinTestOrg.Interface
                                                   DateTime date,
                                                   string activeNo,
                                                   string runNo);
+
+        /// <summary>
+        /// 查詢注區對照表
+        /// </summary>
+        /// <returns></returns>
+        Task<List<GetBetAreaResponseData>> GetBetAreaList();
     }
 }

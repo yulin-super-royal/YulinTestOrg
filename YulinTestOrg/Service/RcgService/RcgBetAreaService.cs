@@ -4,21 +4,23 @@ using YulinTestOrg.Interface;
 
 namespace YulinTestOrg.Service.RcgService
 {
-    public class RcgGameDeskService : IRcgGameDeskService
+    public class RcgBetAreaService : IRcgBetAreaService
     {
         private readonly ApplicationDbContext applicationDbContext;
 
-        public RcgGameDeskService(ApplicationDbContext applicationDbContext)
+        public RcgBetAreaService(ApplicationDbContext applicationDbContext)
         {
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task<List<RcgGameDesk>> Get()
+        public async Task<List<RcgBetArea>> Get()
         {
             try
             {
-                var result = await this.applicationDbContext.RcgGameDesks
-                    .ToListAsync();
+                var result = await this.applicationDbContext.RcgBetAreas
+                     .OrderBy(x => x.GameId)
+                     .ThenBy(x => x.BetArea)
+                     .ToListAsync();
 
                 return result;
             }
@@ -29,11 +31,11 @@ namespace YulinTestOrg.Service.RcgService
             }
         }
 
-        public async Task Add(RcgGameDesk request)
+        public async Task Add(RcgBetArea request)
         {
             try
             {
-                await this.applicationDbContext.RcgGameDesks.AddAsync(request);
+                await this.applicationDbContext.RcgBetAreas.AddAsync(request);
                 await this.applicationDbContext.SaveChangesAsync();
             }
             catch (Exception)
@@ -43,11 +45,11 @@ namespace YulinTestOrg.Service.RcgService
             }
         }
 
-        public async Task Update(RcgGameDesk request)
+        public async Task Update(RcgBetArea request)
         {
             try
             {
-                var target = await this.applicationDbContext.RcgGameDesks
+                var target = await this.applicationDbContext.RcgBetAreas
                     .FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 if (target != null)

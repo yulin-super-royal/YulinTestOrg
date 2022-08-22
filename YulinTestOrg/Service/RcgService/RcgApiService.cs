@@ -226,6 +226,15 @@ namespace YulinTestOrg.Service.RcgService
             return response.Data;
         }
 
+        public async Task<List<GetBetAreaResponseData>> GetBetAreaList()
+        {
+            var request = "";
+            var response = await PostData<string,
+                                          GetBetAreaResponse>("/api/Record/GetBetAreaList", request);
+
+            return response.Data;
+        }
+
         private string DataToDES(string jsonString)
         {
             var desEncrypt = this.desService.Encrypt(jsonString,

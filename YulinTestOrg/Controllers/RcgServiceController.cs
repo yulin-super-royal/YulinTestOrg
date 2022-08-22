@@ -18,16 +18,19 @@ namespace YulinTestOrg.Controllers
         private readonly IRcgBetRecordService rcgBetRecordService;
         private readonly IRcgTransactionRecordService rcgTransactionRecordService;
         private readonly IRcgGameDeskService rcgGameDeskService;
+        private readonly IRcgBetAreaService rcgBetAreaService;
 
         public RcgServiceController(IRcgApiService rcgApiService,
                                     IRcgBetRecordService rcgBetRecordService,
                                     IRcgTransactionRecordService rcgTransactionRecordService,
-                                    IRcgGameDeskService rcgGameDeskService)
+                                    IRcgGameDeskService rcgGameDeskService,
+                                    IRcgBetAreaService rcgBetAreaService)
         {
             this.rcgApiService = rcgApiService;
             this.rcgBetRecordService = rcgBetRecordService;
             this.rcgTransactionRecordService = rcgTransactionRecordService;
             this.rcgGameDeskService = rcgGameDeskService;
+            this.rcgBetAreaService = rcgBetAreaService;
         }
 
         [HttpPost]
@@ -177,6 +180,15 @@ namespace YulinTestOrg.Controllers
         public async Task<IActionResult> GetGameDesk()
         {
             var result = await this.rcgGameDeskService.Get();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetBetArea")]
+        public async Task<IActionResult> GetBetArea()
+        {
+            var result = await this.rcgBetAreaService.Get();
 
             return Ok(result);
         }

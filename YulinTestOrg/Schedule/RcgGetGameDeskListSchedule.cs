@@ -8,12 +8,15 @@ namespace YulinTestOrg.Schedule
     {
         private readonly IRcgApiService rcgApiService;
         private readonly IRcgGameDeskService rcgGameDeskService;
+        private readonly ILogger<RcgGetGameDeskListSchedule> logger;
 
         public RcgGetGameDeskListSchedule(IRcgApiService rcgApiService,
-                                          IRcgGameDeskService rcgGameDeskService)
+                                          IRcgGameDeskService rcgGameDeskService,
+                                          ILogger<RcgGetGameDeskListSchedule> logger)
         {
             this.rcgApiService = rcgApiService;
             this.rcgGameDeskService = rcgGameDeskService;
+            this.logger = logger;
         }
 
         public async Task Invoke()
@@ -26,39 +29,48 @@ namespace YulinTestOrg.Schedule
 
         private async Task ExecuteAsync()
         {
-            var rcgGameDeskList = await this.rcgApiService.GetGameDeskList();
-            var localGameDeskList = await this.rcgGameDeskService.Get();
-
-            foreach (var item in rcgGameDeskList.DataList)
+            try
             {
-                var target = localGameDeskList.FirstOrDefault(x => x.Id == item.Id);
+                var rcgGameDeskList = await this.rcgApiService.GetGameDeskList();
+                var localGameDeskList = await this.rcgGameDeskService.Get();
 
-                if (target == null)
+                foreach (var item in rcgGameDeskList.DataList)
                 {
-                    await this.rcgGameDeskService.Add(new RcgGameDesk
+                    var target = localGameDeskList.FirstOrDefault(x => x.Id == item.Id);
+
+                    if (target == null)
                     {
-                        Id = item.Id,
-                        ServerNo = item.ServerNo,
-                        LobbyNo = item.LobbyNo,
-                        GameNo = item.GameNo,
-                        Tag = item.Tag,
-                        Name = item.Name,
-                        ServerProperty = item.ServerProperty
-                    });
-                }
-                else
-                {
-                    await this.rcgGameDeskService.Update(new RcgGameDesk
+                        await this.rcgGameDeskService.Add(new RcgGameDesk
+                        {
+                            Id = item.Id,
+                            ServerNo = item.ServerNo,
+                            LobbyNo = item.LobbyNo,
+                            GameNo = item.GameNo,
+                            Tag = item.Tag,
+                            Name = item.Name,
+                            ServerProperty = item.ServerProperty
+                        });
+                    }
+                    else
                     {
-                        Id = item.Id,
-                        ServerNo = item.ServerNo,
-                        LobbyNo = item.LobbyNo,
-                        GameNo = item.GameNo,
-                        Tag = item.Tag,
-                        Name = item.Name,
-                        ServerProperty = item.ServerProperty
-                    });
+                        await this.rcgGameDeskService.Update(new RcgGameDesk
+                        {
+                            Id = item.Id,
+                            ServerNo = item.ServerNo,
+                            LobbyNo = item.LobbyNo,
+                            GameNo = item.GameNo,
+                            Tag = item.Tag,
+                            Name = item.Name,
+                            ServerProperty = item.ServerProperty
+                        });
+                    }
                 }
+
+                this.logger.LogInformation("RcgGameDesk Sync Finish");
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("RcgGameDesk Sync Error {Error}", ex);
             }
         }
     }

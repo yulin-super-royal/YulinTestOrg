@@ -48,6 +48,7 @@ namespace YulinTestOrg.Controllers
             //var result9 = await rcgApiService.GetChangeRecordList();
             //var result10 = await rcgApiService.GetTransactionLog(result5.TransactionId);
             //var result11 = await rcgApiService.GetOpenList("SYBC20204101", new DateTime(2022, 8, 9), "620809004", "0302");
+            //var result12 = await rcgApiService.GetBetAreaList();
             return View();
         }
 

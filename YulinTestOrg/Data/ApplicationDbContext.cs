@@ -13,5 +13,6 @@ namespace YulinTestOrg.Data
         public DbSet<RcgBetRecord> RcgBetRecords { get; set; }
         public DbSet<RcgTransactionRecord> RcgTransactionRecords { get; set; }
         public DbSet<RcgGameDesk> RcgGameDesks { get; set; }
+        public DbSet<RcgBetArea> RcgBetAreas { get; set; }
     }
 }
